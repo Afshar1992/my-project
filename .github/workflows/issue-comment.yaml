@@ -7,9 +7,11 @@ on:
 jobs:
   comment-with-action:
     runs-on: ubuntu-latest
+    permissions:
+      issues: write
     steps:
       - name: "Dump GitHub context"
-        run: echo '${{ toJSON(github.event) }}' | jq . 
+        run: echo '${{ toJSON(github.event) }}' | jq .
         shell: bash
       - name: Create comment
         uses: peter-evans/create-or-update-comment@v1
@@ -19,6 +21,6 @@ jobs:
             This is a multi-line test comment
             - With GitHub **Markdown** :sparkles:
             - Created by [create-or-update-comment][1]
-
+            
             [1]: https://github.com/peter-evans/create-or-update-comment
-           reactions: '+1'
+          reactions: '+1'
