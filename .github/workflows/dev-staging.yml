@@ -2,10 +2,35 @@ name: Create Dev Staging Environment
 
 on:
   workflow_dispatch:  # Manual trigger
+  push:
+    branches: [main]  # Auto-deploy when code is pushed to main
 
 jobs:
   deploy-staging:
     runs-on: ubuntu-latest
+    environment: staging  # This helps with environment-specific secrets
+    
     steps:
-      - name: Deploy to Staging
-        run: echo "Deploying to staging..."
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci  # Clean install for CI/CD
+
+      - name: Run tests (optional)
+        run: npm test  # If you have tests
+
+      - name: Deploy to Vercel
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          vercel-args: '--prod'  # Deploy to production
+          # OR use '--preview' for preview deployment
