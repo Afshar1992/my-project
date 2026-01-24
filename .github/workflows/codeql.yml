@@ -6,12 +6,12 @@ on:
   pull_request:
     branches: [ main ]
   schedule:
-    - cron: '0 18 * * 2'  # Run weekly on friday
-
+    - cron: '0 18 * * 2' # Run weekly on Tuesday
 jobs:
   analyze:
     name: Analyze
     runs-on: ubuntu-latest
+
     permissions:
       actions: read
       contents: read
@@ -20,19 +20,17 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'javascript' ]  # For your Node.js/Express app
+        language: [ 'javascript' ]
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Initialize CodeQL
       uses: github/codeql-action/init@v2
       with:
         languages: ${{ matrix.language }}
-
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@v2
+        build-mode: none
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
